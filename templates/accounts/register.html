@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Register | Udemy Clone By Kesava{% endblock %}
+{% block content %}
+<div class="form-wrapper">
+    <h2>Create an Account</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class='alert'>
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <button type="submit">Register</button>
+    </form>
+</div>
+{% endblock %}

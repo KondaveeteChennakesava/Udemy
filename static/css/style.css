@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+nav {
+    background-color: #222;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+    font-size: 1rem;
+}
+
+nav .brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+footer {
+    background-color: #222;
+    color: #aaa;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 4rem;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right a:hover {
+    text-decoration: underline;
+}
+
+.form-wrapper {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-wrapper h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-wrapper label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+}
+
+.form-wrapper input[type="text"],
+.form-wrapper input[type="email"],
+.form-wrapper input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #4a89dc;
+}
+
+.checkbox-wrapper label {
+    margin: 0;
+    font-weight: normal;
+    font-size: 0.95rem;
+}
+
+.form-wrapper button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4a89dc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-wrapper button:hover {
+    background-color: #3a77c1;
+}
+
+.alert {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #f5c2c7;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+li {
+    list-style-type: none;
+}
+
+.hero {
+    background: linear-gradient(135deg, #5d9cec, #4a89dc);
+    color: white;
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: #4a89dc;
+    border: none;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.course-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.course-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.course-card h3 {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.course-card p {
+    font-size: 0.9rem;
+    color: #555;
+}

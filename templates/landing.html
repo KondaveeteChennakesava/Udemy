@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Udemy Clone By Kesava</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{% static "css/style.css" %}">
+    </head>
+    <body>
+        <nav>
+            <div><a href="{% url 'landing' %}">LearnHub</a></div>
+            <div class="nav-right">
+                {% if user.is_authenticated %}
+                <span>Hello, {{ user.username }}</span>
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <div class="hero">
+            <h1>Learn Anytime, Anywhere</h1>
+            <p>Explore top-rated online courses created by experts</p>
+            <a href="#courses"><button class="btn">Browse Courses</button></a>
+        </div>
+
+        <div class="container" id="courses">
+            <h2>Available Courses</h2>
+            <div class="course-grid">
+                {% for course in courses %}
+                <div class="course-card">
+                    {% if course.thumbnail %}
+                    <img
+                        src="{{ course.thumbnail.url }}"
+                        alt="Thumbnail for {{ course.title }}"
+                    />
+                    {% else %}
+                    <img
+                        src="https://via.placeholder.com/300x160"
+                        alt="Course placeholder"
+                    />
+                    {% endif %}
+                    <h3>{{ course.title }}</h3>
+                    <p>{{ course.description|truncatewords:15 }}</p>
+                    <p><strong>By {{ course.instructor.username }}</strong></p>
+                    <a href="{% url 'course_detail' course.id %}"
+                        >View Course</a
+                    >
+                </div>
+                {% empty %}
+                <p>No courses available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
+    </body>
+</html>

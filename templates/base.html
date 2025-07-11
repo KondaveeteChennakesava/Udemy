@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Udemy By Kesava{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{% static "css/style.css" %}">
+    </head>
+    <body>
+        <nav>
+            <div class="brand">
+                <a href="{% url 'landing' %}">Udemy Clone</a>
+            </div>
+            <div class="nav-right">
+                {% if user.is_authenticated %}
+                <span>Hello, {{ user.username }}</span>
+                {% if user.is_instructor %}
+                <a href="#">Instructor Dashboard</a>
+                {% else %}
+                <a href="#">My Courses</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <div class="container">{% block content %} {% endblock %}</div>
+
+        <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
+    </body>
+</html>
