@@ -21,11 +21,12 @@
             </div>
         </nav>
 
-        <div class="hero">
+        {% block hero %}
+        <section class="hero">
             <h1>Learn Anytime, Anywhere</h1>
             <p>Explore top-rated online courses created by experts</p>
             <a href="#courses"><button class="btn">Browse Courses</button></a>
-        </div>
+        </section>
 
         <div class="container" id="courses">
             <h2>Available Courses</h2>
@@ -55,6 +56,11 @@
                 {% endfor %}
             </div>
         </div>
+        {% endblock %}
+
+        <main>
+            <div class="container">{% block content %} {% endblock %}</div>
+        </main>
 
         <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
     </body>
