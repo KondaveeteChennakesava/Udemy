@@ -32,6 +32,11 @@ nav .brand {
     font-weight: bold;
 }
 
+main {
+    height: calc(100vh - 227px);
+    /* height: fit-content; */
+}
+
 .container {
     max-width: 960px;
     margin: 2rem auto;
