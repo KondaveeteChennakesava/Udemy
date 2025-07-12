@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'interactions',
     'payments',
     'certificates',
+    'instructor',
 ]
 
 MIDDLEWARE = [
