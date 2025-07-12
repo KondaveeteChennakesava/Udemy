@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="course-form-container">
+    <h1>{{ form.instance.pk|yesno:"Edit Course,Add New Course" }}</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            {% if field.name == 'is_published' %}
+                <div class="checkbox-field">
+                    {{ field }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.help_text %}
+                        <small class="helptext">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="helptext">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </p>
+            {% endif %}
+        {% endfor %}
+        
+        <div class="course-form-buttons">
+            <a href="{% url 'instructor:my_courses' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-success">💾 Save Course</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

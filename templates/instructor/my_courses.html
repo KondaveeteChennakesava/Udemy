@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="my-courses-header">
+    <h1>My Courses</h1>
+    <a href="{% url 'instructor:course_create' %}" class="create-course-btn">➕ Add New Course</a>
+</div>
+
+{% if courses %}
+<div class="course-count-info">
+    <p>You have {{ page_obj.paginator.count }} course{{ page_obj.paginator.count|pluralize }} in total.</p>
+</div>
+
+<div class="courses-grid">
+    {% for course in courses %}
+    <div class="my-course-card">
+        {% if course.thumbnail %}
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
+        {% else %}
+        <img src="/media/course_thumbnails/{{course.title}}" alt="{{ course.title }}">
+        {% endif %}
+        
+        <div class="my-course-card-content">
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description|truncatewords:20 }}</p>
+            
+            <div class="my-course-stats">
+                <div class="my-course-stat">
+                    <div class="my-course-stat-number">{{ course.avg_rating|default:'-'|floatformat:1 }}</div>
+                    <div class="my-course-stat-label">Rating</div>
+                </div>
+                <div class="my-course-stat">
+                    <div class="my-course-stat-number">{{ course.likes_count }}</div>
+                    <div class="my-course-stat-label">Likes</div>
+                </div>
+                <div class="my-course-stat">
+                    <div class="my-course-stat-number">{{ course.enrollments.count|default:0 }}</div>
+                    <div class="my-course-stat-label">Enrollments</div>
+                </div>
+                <div class="my-course-stat">
+                    <div class="my-course-stat-number">
+                        {% if course.is_published %}
+                            <span style="color: #28a745;">✓</span>
+                        {% else %}
+                            <span style="color: #dc3545;">✗</span>
+                        {% endif %}
+                    </div>
+                    <div class="my-course-stat-label">Published</div>
+                </div>
+            </div>
+            
+            <div class="my-course-actions">
+                {% comment %} <a href="{% url 'courses:course_detail' course.id %}" class="my-course-btn view">View</a> {% endcomment %}
+                <a href="{% url 'instructor:course_update' course.id %}" class="my-course-btn edit">Edit</a>
+                <a href="{% url 'instructor:course_delete' course.id %}" class="my-course-btn delete">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% else %}
+        <span class="disabled">&laquo; First</span>
+        <span class="disabled">Previous</span>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="current">{{ num }}</span>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+    {% else %}
+        <span class="disabled">Next</span>
+        <span class="disabled">Last &raquo;</span>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty-courses">
+    <h2>No Courses Yet</h2>
+    <p>You haven't created any courses yet. Start sharing your knowledge with the world!</p>
+    <a href="{% url 'instructor:course_create' %}" class="btn">Create Your First Course</a>
+</div>
+{% endif %}
+{% endblock %}

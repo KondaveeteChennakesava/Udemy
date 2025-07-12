@@ -9,10 +9,13 @@
     </head>
     <body>
         <nav>
-            <div><a href="{% url 'landing' %}">Udemy Clone</a></div>
+            <div class='brand'><a href="{% url 'landing' %}">Udemy Clone</a></div>
             <div class="nav-right">
                 {% if user.is_authenticated %}
-                <span>Hello, {{ user.username }}</span>
+                <span>Hello, <b>{{ user.username }}</b></span>
+                {% if user.is_instructor %}
+                <a href="{% url 'instructor:instructor_dashboard' %}">My Dashboard</a>
+                {% endif %}
                 <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
                 <a href="{% url 'login' %}">Login</a>
@@ -63,12 +66,10 @@
                     <h3>{{ course.title }}</h3>
                     <p>{{ course.description|truncatewords:15 }}</p>
                     <p><strong>By {{ course.instructor.username }}</strong></p>
-                    <a href="#"
-                        >View Course</a
-                    >
+                    <a href="#">View Course</a>
                     <div class="course-meta">
-                        ⭐ {{ course.avg_rating|default:"0.0"|floatformat:1 }} / 5
-                        &nbsp; | ❤️ {{ course.likes_count }}
+                        ⭐ {{ course.avg_rating|default:"0.0"|floatformat:1 }}
+                        / 5 &nbsp; | ❤️ {{ course.likes_count }}
                     </div>
                 </div>
                 {% empty %}
