@@ -13,4 +13,4 @@ __pycache__/
 *.egg-info/
 *.coverage
 *.migrations/
-media/
+scripts/
