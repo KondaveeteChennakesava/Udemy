@@ -28,6 +28,22 @@
             <a href="#courses"><button class="btn">Browse Courses</button></a>
         </section>
 
+        {% if categories %}
+        <div class="category-buttons">
+            <h2>Browse by Category</h2>
+            <div class="category-row">
+                {% for category in categories %}
+                <a
+                    href="?category={{ category.slug }}"
+                    class="category-btn {% if request.GET.category == category.slug %}active{% endif %}"
+                >
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="container" id="courses">
             <h2>Available Courses</h2>
             <div class="course-grid">
@@ -47,9 +63,13 @@
                     <h3>{{ course.title }}</h3>
                     <p>{{ course.description|truncatewords:15 }}</p>
                     <p><strong>By {{ course.instructor.username }}</strong></p>
-                    <a href="{% url 'course_detail' course.id %}"
+                    <a href="#"
                         >View Course</a
                     >
+                    <div class="course-meta">
+                        ⭐ {{ course.avg_rating|default:"0.0"|floatformat:1 }} / 5
+                        &nbsp; | ❤️ {{ course.likes_count }}
+                    </div>
                 </div>
                 {% empty %}
                 <p>No courses available yet.</p>
@@ -58,9 +78,7 @@
         </div>
         {% endblock %}
 
-        <main>
-            {% block content %} {% endblock %}
-        </main>
+        <main>{% block content %} {% endblock %}</main>
 
         <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
     </body>

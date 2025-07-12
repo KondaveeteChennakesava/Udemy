@@ -4,7 +4,6 @@
 - As a **user**, I can **register and log in** securely using email/password.
 - As a **student**, I can **edit my profile** and see enrolled courses.
 - As a **user**, I can **apply to become an instructor**.
-- As an **admin**, I can **approve or reject instructor requests**.
 
 ---
 

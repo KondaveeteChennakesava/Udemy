@@ -1,20 +1,21 @@
-{% extends 'base.html' %}
-{% block title %}Login | Udemy Clone By Kesava{% endblock %}
+{% extends 'base.html' %} {% block title %}Login | Udemy Clone By Kesava{% endblock %} 
 {% block inner_content %}
-<div class="form-wrapper">
-    <h2>Login</h2>
-    {% if error %}
-    <div class="alert">{{ error }}</div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" required />
+<div class="main">
+    <div class="form-wrapper">
+        <h2>Login</h2>
+        {% if error %}
+        <div class="alert">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required />
 
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" required />
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required />
 
-        <button type="submit">Login</button>
-    </form>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

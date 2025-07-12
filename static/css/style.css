@@ -32,7 +32,7 @@ nav .brand {
     font-weight: bold;
 }
 
-main {
+.main {
     height: calc(100vh - 227px);
     /* height: fit-content; */
 }
@@ -199,4 +199,50 @@ li {
 .course-card p {
     font-size: 0.9rem;
     color: #555;
+}
+
+.category-btn.active {
+    background-color: #333;
+    color: white;
+}
+
+.category-buttons h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.category-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0.3rem;
+}
+
+.category-row a {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.category-btn {
+    background-color: #cfdaff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.category-btn:hover {
+    background-color: #78bcff;
+}
+
+.course-meta {
+    margin-top: 0.5rem;
+    color: #555;
+    font-size: 0.9rem;
+}
+.course-meta span {
+    margin-right: 1rem;
 }
