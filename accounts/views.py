@@ -23,7 +23,10 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('landing')
+            if user.is_instructor:
+                return redirect('instructor:instructor_dashboard')
+            else:
+                return redirect('landing')
         else:
             return render(request, 'accounts/login.html', {'error': 'Invalid credentials'})
     
