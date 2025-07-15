@@ -1,0 +1,165 @@
+.hero {
+    background: linear-gradient(135deg, #5d9cec, #4a89dc);
+    color: white;
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.hero .btn {
+    background-color: white;
+    color: #4a89dc;
+}
+
+.category-buttons h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.category-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0.3rem;
+    justify-content: center;
+}
+
+.category-row a {
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: 120px;
+}
+
+.category-btn {
+    background-color: #cfdaff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    display: block;
+    white-space: nowrap;
+}
+
+.category-btn:hover {
+    background-color: #78bcff;
+}
+
+.category-btn.active {
+    background-color: #333;
+    color: white;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.course-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.course-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.course-card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.course-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+    line-height: 1.4;
+    height: 2rem;
+    overflow: hidden;
+}
+
+.course-card p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    height: 4.5rem;
+    overflow: hidden;
+}
+
+.course-meta {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.course-meta span {
+    margin-right: 1rem;
+    display: inline-block;
+}
+
+.stats-container {
+    background-color: #f8f9fa;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-left: 4px solid #4a89dc;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #4a89dc;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 500;
+}

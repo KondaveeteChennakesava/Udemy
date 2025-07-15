@@ -1,0 +1,201 @@
+.course-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-form-container h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 2rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+.course-form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.course-form-container p {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.course-form-container label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.course-form-container input[type="text"],
+.course-form-container input[type="email"],
+.course-form-container input[type="number"],
+.course-form-container input[type="file"],
+.course-form-container select,
+.course-form-container textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fff;
+}
+
+.course-form-container input[type="text"]:focus,
+.course-form-container input[type="email"]:focus,
+.course-form-container input[type="number"]:focus,
+.course-form-container input[type="file"]:focus,
+.course-form-container select:focus,
+.course-form-container textarea:focus {
+    outline: none;
+    border-color: #4a89dc;
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.1);
+}
+
+.course-form-container textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.course-form-container select {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.course-form-container input[type="file"] {
+    padding: 0.5rem;
+    border: 2px dashed #e9ecef;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.course-form-container input[type="file"]:hover {
+    border-color: #4a89dc;
+    background-color: #f0f4ff;
+}
+
+.course-form-container .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-form-container .checkbox-field:hover {
+    border-color: #4a89dc;
+    background-color: #f0f4ff;
+}
+
+.course-form-container .checkbox-field label {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.course-form-container .checkbox-field input[type="checkbox"] {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: white;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.course-form-container .checkbox-field input[type="checkbox"]:focus {
+    outline: 2px solid #4a89dc;
+    outline-offset: 2px;
+}
+
+.course-form-container .checkbox-field input[type="checkbox"]:checked {
+    background-color: #4a89dc;
+    border-color: #4a89dc;
+}
+
+.course-form-container .checkbox-field input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.course-form-container .checkbox-field input[type="checkbox"]:hover {
+    border-color: #4a89dc;
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.1);
+}
+
+.course-form-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.course-form-buttons .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.course-form-buttons .btn:active {
+    transform: translateY(0);
+}
+
+.form-field-group {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    border-left: 4px solid #4a89dc;
+}
+
+.form-field-group h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
