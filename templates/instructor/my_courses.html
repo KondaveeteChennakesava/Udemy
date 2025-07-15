@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/instructor.css' %}">
+{% endblock %}
 {% block content %}
 <div class="my-courses-header">
     <h1>My Courses</h1>
@@ -16,7 +21,7 @@
         {% if course.thumbnail %}
         <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}">
         {% else %}
-        <img src="/media/course_thumbnails/{{course.title}}" alt="{{ course.title }}">
+        <img src="/media/course_thumbnails/information-dark.png" alt="{{ course.title }}">
         {% endif %}
         
         <div class="my-course-card-content">
@@ -49,7 +54,7 @@
             </div>
             
             <div class="my-course-actions">
-                {% comment %} <a href="{% url 'courses:course_detail' course.id %}" class="my-course-btn view">View</a> {% endcomment %}
+                <a href="{% url 'courses:course_dashboard' course.id %}" class="my-course-btn view">View</a>
                 <a href="{% url 'instructor:course_update' course.id %}" class="my-course-btn edit">Edit</a>
                 <a href="{% url 'instructor:course_delete' course.id %}" class="my-course-btn delete">Delete</a>
             </div>
@@ -58,7 +63,6 @@
     {% endfor %}
 </div>
 
-<!-- Pagination -->
 {% if page_obj.has_other_pages %}
 <div class="pagination">
     {% if page_obj.has_previous %}

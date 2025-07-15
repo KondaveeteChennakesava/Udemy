@@ -1,0 +1,115 @@
+<div class="qna-container">
+    <div class="qna-header">
+        <h2>💬 Discussion</h2>
+        <div class="qna-stats">
+            <span class="stat-item">{{ questions.count }} questions</span>
+            <span class="stat-item">{{ total_answers|default:0 }} replies</span>
+        </div>
+    </div>
+
+    <div class="new-comment-form">
+        <div class="comment-input-container">
+            <div class="user-avatar current-user">
+                {{ request.user.username|first|upper }}
+            </div>
+            <form action="{% url 'courses:interactions:post_question' course.id %}" method="post" class="comment-form">
+                {% csrf_token %}
+                <div class="input-wrapper">
+                    <textarea 
+                        name="content" 
+                        placeholder="Ask a question about this course..." 
+                        required
+                        rows="3"
+                        class="comment-textarea"
+                    ></textarea>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-comment">
+                            <span class="btn-icon">💬</span>
+                            Ask Question
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="comments-list">
+        {% if questions %}
+            {% for q in questions %}
+                <div class="comment-thread" data-question-id="{{ q.id }}">
+                    <div class="comment-item question-comment">
+                        <div class="comment-avatar">
+                            <div class="user-avatar">
+                                {{ q.student.username|first|upper }}
+                            </div>
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <div class="comment-meta">
+                                    <span class="username">{{ q.student.username }}</span>
+                                    <span class="timestamp">{{ q.created_at|timesince }} ago</span>
+                                    <span class="comment-type">asked</span>
+                                </div>
+                                <div class="comment-actions">
+                                    <button class="action-btn" onclick="toggleReplyForm('question-{{ q.id }}')">
+                                        <span class="icon">💬</span>
+                                        Reply
+                                    </button>
+                                    <span class="reply-count">{{ q.answers.count }} replies</span>
+                                </div>
+                            </div>
+                            <div class="comment-body">
+                                <p>{{ q.content|linebreaks }}</p>
+                            </div>
+                            
+                            <div class="reply-form-wrapper" id="question-{{ q.id }}-reply" style="display: none;">
+                                <div class="reply-input-container">
+                                    <div class="user-avatar small">
+                                        {{ request.user.username|first|upper }}
+                                    </div>
+                                    <form action="{% url 'courses:interactions:post_answer' course.id q.id %}" method="post" class="reply-form">
+                                        {% csrf_token %}
+                                        <div class="input-wrapper">
+                                            <textarea 
+                                                name="content" 
+                                                placeholder="Share your knowledge..." 
+                                                required
+                                                rows="2"
+                                                class="reply-textarea"
+                                            ></textarea>
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn-reply">Reply</button>
+                                                <button type="button" class="btn-cancel" onclick="toggleReplyForm('question-{{ q.id }}')">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="replies-container">
+                        {% if q.answers.all %}
+                            {% for ans in q.answers.all %}
+                                {% if not ans.parent %}
+                                    {% include 'interactions/comment_recursive.html' with comment=ans question=q course=course depth=1 %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-comments">
+                <div class="empty-icon">💭</div>
+                <h3>No questions yet</h3>
+                <p>Start the conversation by asking a question!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'js/qna.js' %}"></script>
+{% endblock %}

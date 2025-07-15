@@ -1,86 +1,108 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Udemy Clone By Kesava</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="{% static "css/style.css" %}">
-    </head>
-    <body>
-        <nav>
-            <div class='brand'><a href="{% url 'landing' %}">Udemy Clone</a></div>
-            <div class="nav-right">
-                {% if user.is_authenticated %}
-                <span>Hello, <b>{{ user.username }}</b></span>
-                {% if user.is_instructor %}
-                <a href="{% url 'instructor:instructor_dashboard' %}">My Dashboard</a>
-                {% endif %}
-                <a href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register' %}">Register</a>
-                {% endif %}
+
+{% block title %}Udemy Clone By Kesava - Learn Anytime, Anywhere{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <h1>Learn Anytime, Anywhere</h1>
+    <p>Explore top-rated online courses created by experts</p>
+    <a href="#courses"><button class="btn">Browse Courses</button></a>
+</section>
+
+<div class="stats-section">
+    <div class="stats-container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_courses|default:"0" }}</div>
+                <div class="stat-label">Total Courses</div>
             </div>
-        </nav>
-
-        {% block hero %}
-        <section class="hero">
-            <h1>Learn Anytime, Anywhere</h1>
-            <p>Explore top-rated online courses created by experts</p>
-            <a href="#courses"><button class="btn">Browse Courses</button></a>
-        </section>
-
-        {% if categories %}
-        <div class="category-buttons">
-            <h2>Browse by Category</h2>
-            <div class="category-row">
-                {% for category in categories %}
-                <a
-                    href="?category={{ category.slug }}"
-                    class="category-btn {% if request.GET.category == category.slug %}active{% endif %}"
-                >
-                    {{ category.name }}
-                </a>
-                {% endfor %}
+            <div class="stat-card">
+                <div class="stat-number">{{ total_instructors|default:"0" }}</div>
+                <div class="stat-label">Expert Instructors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_students|default:"0" }}</div>
+                <div class="stat-label">Happy Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_reviews|default:"0" }}</div>
+                <div class="stat-label">Course Reviews</div>
             </div>
         </div>
-        {% endif %}
+    </div>
+</div>
 
-        <div class="container" id="courses">
-            <h2>Available Courses</h2>
-            <div class="course-grid">
-                {% for course in courses %}
-                <div class="course-card">
+
+{% if categories %}
+<div class="category-buttons">
+    <h2>Browse by Category</h2>
+    <div class="category-row">
+        <a href="{% url 'landing' %}" 
+           class="category-btn {% if not request.GET.category %}active{% endif %}">
+            All Courses
+        </a>
+        {% for category in categories %}
+        <a href="?category={{ category.slug }}"
+           class="category-btn {% if request.GET.category == category.slug %}active{% endif %}">
+            {{ category.name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+<div class="container" id="courses">
+    <h2>Available Courses</h2>
+    {% if courses %}
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card">
+                <a href="{% url 'courses:course_detail' course.pk %}">
                     {% if course.thumbnail %}
-                    <img
-                        src="{{ course.thumbnail.url }}"
-                        alt="Thumbnail for {{ course.title }}"
-                    />
+                        <img src="{{ course.thumbnail.url }}" alt="Thumbnail for {{ course.thumbnail }}">
                     {% else %}
-                    <img
-                        src="https://via.placeholder.com/300x160"
-                        alt="Course placeholder"
-                    />
+                        <img src="media/course_thumbnails/information-dark.png" alt="Course placeholder">
                     {% endif %}
-                    <h3>{{ course.title }}</h3>
-                    <p>{{ course.description|truncatewords:15 }}</p>
-                    <p><strong>By {{ course.instructor.username }}</strong></p>
-                    <a href="#">View Course</a>
-                    <div class="course-meta">
-                        ⭐ {{ course.avg_rating|default:"0.0"|floatformat:1 }}
-                        / 5 &nbsp; | ❤️ {{ course.likes_count }}
+                    
+                    <div class="course-card-content">
+                        <h3>{{ course.title }}</h3>
+                        <p>{{ course.description|truncatewords:15 }}</p>
+                        
+                        <div class="course-instructor">
+                            <strong>By {{ course.instructor.username }}</strong>
+                        </div>
+                        
+                        <div class="course-meta">
+                            <span class="rating">
+                                <span class="star-icon">⭐</span>{{ course.avg_rating|default:"0.0"|floatformat:1 }}
+                            </span>
+                            <span class="likes">
+                                <span class="heart-icon">❤️</span>{{ course.likes_count }}
+                            </span>
+                            <span class="students">
+                                <span class="student-icon">👥</span>{{ course.total_enrollments|default:0 }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                {% empty %}
-                <p>No courses available yet.</p>
-                {% endfor %}
+                </a>
             </div>
+            {% endfor %}
         </div>
-        {% endblock %}
-
-        <main>{% block content %} {% endblock %}</main>
-
-        <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
-    </body>
-</html>
+    {% else %}
+        <div class="no-courses">
+            <h3>No courses available yet</h3>
+            <p>{% if request.GET.category %}No courses found in this category.{% else %}Be the first to create a course!{% endif %}</p>
+            {% if user.is_authenticated and user.is_instructor %}
+                <a href="{% url 'instructor:course_create' %}" class="btn">Create Course</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,7 +1,44 @@
-{% extends 'landing.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Udemy Clone By Kesava{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="brand">
+            <a href="{% url 'landing' %}">Udemy Clone</a>
+        </div>
+        <div class="nav-right">
+            {% if user.is_authenticated %}
+                <span>Hello, <b>{{ user.username }}</b></span>
+                {% if user.is_instructor %}
+                    <a href="{% url 'instructor:instructor_dashboard' %}">My Dashboard</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
 
-{% block hero %}{% endblock %}
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
 
-{% block content %}
-    {% block inner_content %}{% endblock %}
-{% endblock %}
+    <footer>&copy; 2025 Udemy – Made with ❤️ By Kesava</footer>
+
+    {% block script_files %} {% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

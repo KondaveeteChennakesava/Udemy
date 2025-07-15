@@ -1,0 +1,62 @@
+<div class="comment-item reply-comment" data-comment-id="{{ comment.id }}" style="margin-left: {{ depth }}rem;">
+    <div class="comment-avatar">
+        <div class="user-avatar small">
+            {{ comment.user.username|first|upper }}
+        </div>
+    </div>
+    <div class="comment-content">
+        <div class="comment-header">
+            <div class="comment-meta">
+                <span class="username">{{ comment.user.username }}</span>
+                {% if comment.user == course.instructor %}
+                    <span class="instructor-badge">Instructor</span>
+                {% endif %}
+                <span class="timestamp">{{ comment.created_at|timesince }} ago</span>
+                <span class="comment-type">replied</span>
+            </div>
+            <div class="comment-actions">
+                <button class="action-btn" onclick="toggleReplyForm('comment-{{ comment.id }}-{{ depth }}')">
+                    <span class="icon">💬</span>
+                    Reply
+                </button>
+                {% if comment.replies.all %}
+                    <span class="reply-count">{{ comment.replies.count }} replies</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="comment-body">
+            <p>{{ comment.content|linebreaks }}</p>
+        </div>
+        
+        <div class="reply-form-wrapper" id="comment-{{ comment.id }}-{{ depth }}-reply" style="display: none;">
+            <div class="reply-input-container">
+                <div class="user-avatar tiny">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <form action="{% url 'courses:interactions:post_answer' course.id question.id %}" method="post" class="reply-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <div class="input-wrapper">
+                        <textarea 
+                            name="content" 
+                            placeholder="Reply to {{ comment.user.username }}..." 
+                            required
+                            rows="2"
+                            class="reply-textarea"
+                        ></textarea>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-reply">Reply</button>
+                            <button type="button" class="btn-cancel" onclick="toggleReplyForm('comment-{{ comment.id }}-{{ depth }}')">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if comment.replies.all %}
+    {% for reply in comment.replies.all %}
+        {% include 'interactions/comment_recursive.html' with comment=reply question=question course=course depth=depth|add:1 %}
+    {% endfor %}
+{% endif %}

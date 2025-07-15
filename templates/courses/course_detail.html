@@ -1,0 +1,142 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course-detail.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<div class="course-detail">
+    <div class="course-header">
+        <div class='left-header'>
+            {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" />
+            {% else %}
+                <img src="/media/course_thumbnails/information-dark.png" alt="Course placeholder" />
+            {% endif %}
+
+            <div class="enrollment-section">
+                {% if user.is_authenticated %} 
+                    {% if not enrolled %}
+                        <form method="post" action="{% url 'enrollments:enroll_course' course.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="enroll-btn">🎓 Enroll Now</button>
+                        </form>
+                    {% else %}
+                    <a href="{% url 'courses:course_dashboard' course.pk %}" class="btn dashboard-btn">Go to Dashboard</a>
+                    {% endif %}
+                {% else %}
+                    <p><a href="{% url 'login' %}">🔑 Log in</a> to enroll in this course</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class='right-header'>
+            <h1>{{ course.title }}</h1>
+            
+            <div class="course-info-grid">
+                <div class="course-info-item">
+                    <span class="info-icon">👨‍🏫</span>
+                    <div class="info-label">Instructor</div>
+                    <div class="info-value">{{ course.instructor.username }}</div>
+                </div>
+                
+                <div class="course-info-item">
+                    <span class="info-icon">📚</span>
+                    <div class="info-label">Category</div>
+                    <div class="info-value">{{ course.category.name }}</div>
+                </div>
+                
+                <div class="course-info-item">
+                    <span class="info-icon">⭐</span>
+                    <div class="info-label">Rating</div>
+                    <div class="info-value">
+                        <div class="rating-stars">
+                            {% with rating=course.average_rating|floatformat:0 %}
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating|add:0 %}
+                                        <span class="star filled">★</span>
+                                    {% else %}
+                                        <span class="star empty">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                            <span class="rating-number">{{ course.average_rating|floatformat:1 }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="course-info-item">
+                    <span class="info-icon">❤️</span>
+                    <div class="info-label">Likes</div>
+                    <div class="info-value">
+                        <span class="likes-count">{{ course.total_likes }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-stats-summary">
+                <div class="stat-item">
+                    <div class="stat-number">{{ lessons.count|default:0 }}</div>
+                    <div class="stat-label">Lessons</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ reviews.count|default:0 }}</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ course.total_enrollments|default:0 }}</div>
+                    <div class="stat-label">Students</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="course-description">
+        <h2>Description</h2>
+        <p>{{ course.description|linebreaks }}</p>
+    </div>
+
+    <div class="course-lessons">
+        <h2>Lessons</h2>
+        {% if lessons %}
+        <ul>
+            {% for lesson in lessons %}
+            <li>
+                {{ lesson.order }}. {{ lesson.title }} 
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No lessons added yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="course-reviews">
+        <h2>Student Reviews</h2>
+        {% if reviews %} 
+            {% for review in reviews %}
+            <div class="review">
+                <strong>{{ review.user.username }}</strong> – 
+                {% with review.rating as rating %} 
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= rating %}
+                            <span class="star filled">★</span>
+                        {% else %}
+                            <span class="star empty">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+                <p>{{ review.comment|linebreaks }}</p>
+            </div>
+            {% endfor %} 
+        {% else %}
+            <p>No reviews yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

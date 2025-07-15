@@ -1,0 +1,223 @@
+{% extends 'base.html' %} {% load static %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/comments.css' %}" />
+<link rel="stylesheet" href="{% static 'css/course-dashboard.css' %}" />
+{% endblock %} {% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="course-header-info">
+            <div class="course-image">
+                {% if course.thumbnail %}
+                <img
+                    src="{{ course.thumbnail.url }}"
+                    alt="{{ course.title }}"
+                />
+                {% else %}
+                <img
+                    src="/media/course_thumbnails/information-dark.png"
+                    alt="Course"
+                />
+                {% endif %}
+            </div>
+            <div class="course-details">
+                <h1>{{ course.title }}</h1>
+                <p class="instructor">By {{ course.instructor.username }}</p>
+                <p class="category">{{ course.category.name }}</p>
+            </div>
+        </div>
+
+        <div class="progress-overview">
+            <div class="progress-circle">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle
+                        class="progress-ring-circle"
+                        stroke="#e6e6e6"
+                        stroke-width="8"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                    />
+                    <circle
+                        class="progress-ring-circle progress-ring-fill"
+                        stroke="#4CAF50"
+                        stroke-width="8"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                        style="stroke-dasharray: 326.73; stroke-dashoffset: {{ progress_offset }}"
+                    />
+                </svg>
+                <div class="progress-text">
+                    <span class="progress-percentage">{{ progress }}%</span>
+                    <span class="progress-label">Complete</span>
+                </div>
+            </div>
+
+            <div class="progress-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{ completed_lessons }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_lessons }}</div>
+                    <div class="stat-label">Total Lessons</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{ remaining_lessons }}</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="course-navigation">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="lessons">
+                📚 Lessons
+            </button>
+            <button class="nav-tab" data-tab="qna">💬 Q&A</button>
+            <button class="nav-tab" data-tab="certificates">
+                🏆 Certificates
+            </button>
+        </div>
+    </div>
+
+    <div class="tab-content active" id="lessons-tab">
+        <div class="lessons-container">
+            <div class="lessons-header">
+                <h2>Course Lessons</h2>
+                {% if next_lesson %}
+                <div class="next-lesson-banner">
+                    <span class="next-lesson-icon">▶️</span>
+                    <div class="next-lesson-info">
+                        <h3>Continue Learning</h3>
+                        <p>{{ next_lesson.title }}</p>
+                    </div>
+                    <a href="#lesson-{{ next_lesson.id }}" class="continue-btn"
+                        >Continue</a
+                    >
+                </div>
+                {% else %}
+                <div class="completion-banner">
+                    <span class="completion-icon">🎉</span>
+                    <div class="completion-info">
+                        <h3>Congratulations!</h3>
+                        <p>You've completed all lessons in this course!</p>
+                    </div>
+                    <button class="certificate-btn">Get Certificate</button>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="lessons-list">
+                {% for lesson in lessons %}
+                <div
+                    class="lesson-card {% if lesson.is_completed %}completed{% endif %}"
+                    id="lesson-{{ lesson.id }}"
+                >
+                    <div class="lesson-status">
+                        {% if lesson.is_completed %}
+                        <span class="status-icon completed">✅</span>
+                        {% else %}
+                        <span class="status-icon pending">⏳</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="lesson-content">
+                        <div class="lesson-header">
+                            <h3>{{ lesson.order }}. {{ lesson.title }}</h3>
+                            <span class="lesson-duration">
+                                {% if lesson.duration %} ⏱️ {{ lesson.duration
+                                }} min {% else %} ⏱️ 5 min {% endif %}
+                            </span>
+                        </div>
+
+                        {% if lesson.description %}
+                        <p class="lesson-description">
+                            {{ lesson.description|truncatewords:20 }}
+                        </p>
+                        {% endif %}
+
+                        <div class="lesson-actions">
+                            {% if lesson.video_url %}
+                            <a
+                                href="{{ lesson.video_url }}"
+                                target="_blank"
+                                class="lesson-btn watch-btn"
+                            >
+                                <span>▶️</span> Watch Video
+                            </a>
+                            {% endif %} {% if lesson.is_completed %}
+                            <button class="lesson-btn completed-btn" disabled>
+                                <span>✅</span> Completed
+                            </button>
+                            {% else %}
+                            <form
+                                method="post"
+                                class="mark-complete-form"
+                                data-lesson-id="{{ lesson.id }}"
+                            >
+                                {% csrf_token %}
+                                <input
+                                    type="hidden"
+                                    name="lesson_id"
+                                    value="{{ lesson.id }}"
+                                />
+                                <button
+                                    type="submit"
+                                    class="lesson-btn complete-btn"
+                                >
+                                    <span>✓</span> Mark Complete
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="qna-tab">
+        {% include 'interactions/qna_tab.html' %}
+    </div>
+
+    <div class="tab-content" id="certificates-tab">
+        <div class="certificates-container">
+            <div class="certificates-header">
+                <h2>Your Certificates</h2>
+            </div>
+
+            <div class="certificates-list">
+                {% if progress == 100 %}
+                <div class="certificate-card">
+                    <div class="certificate-icon">🏆</div>
+                    <div class="certificate-info">
+                        <h3>Course Completion Certificate</h3>
+                        <p>{{ course.title }}</p>
+                        <p>
+                            Completed on {{ enrollment.updated_at|date:"F d, Y"
+                            }}
+                        </p>
+                    </div>
+                    <button class="download-btn">Download PDF</button>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon">🏆</span>
+                    <h3>Complete the course to earn your certificate</h3>
+                    <p>You're {{ progress }}% done! Keep going!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 
+
+{% block extra_js %}
+<script src="{% static 'js/course_dashboard.js' %}"></script>
+{% endblock %}
