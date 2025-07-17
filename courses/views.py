@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from courses.models import Course, Category, Lesson, Review
@@ -8,6 +8,53 @@ from accounts.models import User
 from django.db.models import Avg, Count, Prefetch
 from enrollments.models import Enrollment, CourseProgress
 from interactions.models import Question, Answer
+
+@login_required
+def add_review(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+    if request.method == 'POST':
+        rating = int(request.POST.get('rating'))
+        comment = request.POST.get('content')
+
+        existing = Review.objects.filter(course=course, user=request.user).first()
+        if existing:
+            return redirect('courses:course_dashboard', pk=course.id)
+
+        Review.objects.create(course=course, user=request.user, rating=rating, comment=comment)
+    return redirect('courses:course_dashboard', pk=course.id)
+
+@login_required
+def update_review(request, course_id):
+    review = get_object_or_404(Review, course__id=course_id, user=request.user)
+    if request.method == 'POST':
+        review.rating = int(request.POST.get('rating'))
+        review.comment = request.POST.get('content')
+        review.save()
+    return redirect('courses:course_dashboard', pk=course_id)
+
+@login_required
+def delete_review(request, course_id):
+    review = get_object_or_404(Review, course__id=course_id, user=request.user)
+    if request.method == 'POST':
+        review.delete()
+    return redirect('courses:course_dashboard', pk=course_id)
+
+
+@login_required
+def toggle_like(request, course_id):
+    if request.method == 'POST':
+        course = get_object_or_404(Course, id=course_id)
+        user = request.user
+        if user in course.likes.all():
+            course.likes.remove(user)
+            liked = False
+        else:
+            course.likes.add(user)
+            liked = True
+        return redirect('courses:course_dashboard', pk=course_id)
+    return HttpResponseBadRequest("Invalid request method.")
+
+
 
 def course_list(request):
     category_slug = request.GET.get("category")
@@ -108,8 +155,11 @@ def course_dashboard(request, pk):
         pk=pk
     )
     
-    enrollment = get_object_or_404(Enrollment, student=request.user, course=course)
-    
+    try:
+        enrollment = Enrollment.objects.get(student=request.user, course=course)
+    except Enrollment.DoesNotExist:
+        return HttpResponseForbidden("You are not enrolled in this course.")
+
     lessons = course.lessons.all().order_by('order')
     
     completed_lesson_ids = CourseProgress.objects.filter(
