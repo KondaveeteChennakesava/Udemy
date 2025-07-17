@@ -93,3 +93,71 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 100);
     }
 });
+
+function toggleEditReview() {
+    const editForm = document.getElementById("edit-review-form");
+    const existingReview = document.querySelector(".existing-review");
+
+    if (editForm.style.display === "none") {
+        editForm.style.display = "block";
+        existingReview.style.display = "none";
+    } else {
+        editForm.style.display = "none";
+        existingReview.style.display = "block";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const starRatings = document.querySelectorAll(".star-rating");
+
+    starRatings.forEach((rating) => {
+        const inputs = rating.querySelectorAll('input[type="radio"]');
+        const labels = rating.querySelectorAll(".star-label");
+
+        updateStars(rating);
+
+        inputs.forEach((input, index) => {
+            input.addEventListener("change", function () {
+                updateStars(rating);
+            });
+        });
+
+        labels.forEach((label, index) => {
+            label.addEventListener("mouseenter", function () {
+                highlightStars(rating, index + 1);
+            });
+
+            label.addEventListener("mouseleave", function () {
+                updateStars(rating);
+            });
+        });
+    });
+
+    function updateStars(container) {
+        const checkedInput = container.querySelector(
+            'input[type="radio"]:checked'
+        );
+        const labels = container.querySelectorAll(".star-label");
+        const checkedValue = checkedInput ? parseInt(checkedInput.value) : 0;
+
+        labels.forEach((label, index) => {
+            if (index < checkedValue) {
+                label.classList.add("filled");
+            } else {
+                label.classList.remove("filled");
+            }
+        });
+    }
+
+    function highlightStars(container, count) {
+        const labels = container.querySelectorAll(".star-label");
+
+        labels.forEach((label, index) => {
+            if (index < count) {
+                label.classList.add("hover");
+            } else {
+                label.classList.remove("hover");
+            }
+        });
+    }
+});

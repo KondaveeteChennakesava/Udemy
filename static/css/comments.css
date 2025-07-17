@@ -38,23 +38,27 @@
 
 .comment-input-container {
     display: flex;
+    flex-direction: column;
     gap: 0.75rem;
     background: #f8f9fa;
     padding: 1rem;
     border-radius: 8px;
     border: 1px solid #e1e5e9;
-    align-items: flex-start;
+    align-items: stretch;
+    width: 100%;
 }
 
 .reply-input-container {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     background: #f8f9fa;
     padding: 0.75rem;
     border-radius: 6px;
     border: 1px solid #e1e5e9;
     margin-top: 0.75rem;
-    align-items: flex-start;
+    align-items: stretch;
+    width: 100%;
 }
 
 .user-avatar {
@@ -90,18 +94,18 @@
 }
 
 .input-wrapper {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     width: 100%;
-    min-width: 0;
+    flex: 1;
 }
 
 .comment-textarea,
 .reply-textarea {
     width: 100%;
-    min-width: 0;
+    min-width: 100%;
+    max-width: 100%;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     padding: 0.75rem;
@@ -111,6 +115,7 @@
     transition: all 0.2s ease;
     background: white;
     box-sizing: border-box;
+    flex: 1;
 }
 
 .comment-textarea:focus,
