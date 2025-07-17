@@ -12,7 +12,7 @@
             {% if course.thumbnail %}
                 <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" />
             {% else %}
-                <img src="/media/course_thumbnails/information-dark.png" alt="Course placeholder" />
+                <img src="{% static 'images/default-course.png' %}" alt="Course placeholder" />
             {% endif %}
 
             <div class="enrollment-section">
@@ -26,7 +26,7 @@
                     <a href="{% url 'courses:course_dashboard' course.pk %}" class="btn dashboard-btn">Go to Dashboard</a>
                     {% endif %}
                 {% else %}
-                    <p><a href="{% url 'login' %}">🔑 Log in</a> to enroll in this course</p>
+                    <p><a href="{% url 'accounts:login' %}">🔑 Log in</a> to enroll in this course</p>
                 {% endif %}
             </div>
         </div>
@@ -36,9 +36,11 @@
             
             <div class="course-info-grid">
                 <div class="course-info-item">
+                    <a href="{% url 'profiles:profile' course.instructor.username %}">
                     <span class="info-icon">👨‍🏫</span>
                     <div class="info-label">Instructor</div>
                     <div class="info-value">{{ course.instructor.username }}</div>
+                </a>
                 </div>
                 
                 <div class="course-info-item">

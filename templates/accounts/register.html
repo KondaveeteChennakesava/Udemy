@@ -1,22 +1,97 @@
 {% extends 'base.html' %} 
-{% block title %}
-Register | Udemy Clone By
-Kesava
-{% endblock %} 
-
-
+{% load static %}
+{% block title %}Register | Udemy Clone By Kesava{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}" />
+<link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+{% endblock %}
 {% block content %}
-<div class="main">
-    <div class="form-wrapper">
-        <h2>Create an Account</h2>
-        <form method="post">
-            {% csrf_token %} {% for field in form %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }} {% if field.errors %}
-            <div class="alert">{{ field.errors }}</div>
-            {% endif %} {% endfor %}
-            <button type="submit">Register</button>
-        </form>
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <h1>Join Our Community! 🎓</h1>
+            <p>Create an account to start your learning journey</p>
+        </div>
+        
+        <div class="auth-form">
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+            
+            <form method="post" class="register-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">🏷️ {{ form.username.label }}</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="field-error">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">📧 {{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="field-error">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">🔒 {{ form.password1.label }}</label>
+                    <div class="password-input">
+                        {{ form.password1 }}
+                        <button type="button" class="toggle-password" onclick="togglePassword('id_password1', 'toggle-icon-1')">
+                            <span id="toggle-icon-1">👁️</span>
+                        </button>
+                    </div>
+                    <div id="password-strength" class="password-strength"></div>
+                    {% if form.password1.errors %}
+                    <div class="field-error">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">🔒 {{ form.password2.label }}</label>
+                    <div class="password-input">
+                        {{ form.password2 }}
+                        <button type="button" class="toggle-password" onclick="togglePassword('id_password2', 'toggle-icon-2')">
+                            <span id="toggle-icon-2">👁️</span>
+                        </button>
+                    </div>
+                    {% if form.password2.errors %}
+                    <div class="field-error">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.is_instructor.id_for_label }}">👨‍🏫 {{ form.is_instructor.label }}</label>
+                    <div class="checkbox-wrapper">
+                        {{ form.is_instructor }}
+                        <span class="checkbox-text">I want to become an instructor and create courses</span>
+                    </div>
+                    {% if form.is_instructor.errors %}
+                    <div class="field-error">{{ form.is_instructor.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-icon">🚀</span>
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{% url 'accounts:login' %}" class="auth-link">Sign in here</a></p>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/register.js' %}"></script>
 {% endblock %}

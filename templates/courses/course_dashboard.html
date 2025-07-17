@@ -13,15 +13,43 @@
                 />
                 {% else %}
                 <img
-                    src="/media/course_thumbnails/information-dark.png"
+                    src="{% static 'images/default-course.png' %}"
                     alt="Course"
                 />
                 {% endif %}
             </div>
             <div class="course-details">
-                <h1>{{ course.title }}</h1>
-                <p class="instructor">By {{ course.instructor.username }}</p>
-                <p class="category">{{ course.category.name }}</p>
+                <h1>
+                    <a href="{% url 'courses:course_detail' course.id %}"
+                        >{{ course.title }}</a
+                    >
+                </h1>
+                <p class="instructor">
+                    👨‍🏫 By
+                    <a
+                        href="{% url 'profiles:profile' course.instructor.username %}"
+                        class="instructor-link"
+                        >{{ course.instructor.username }}</a
+                    >
+                </p>
+                <p class="category">📂 {{ course.category.name }}</p>
+
+                <div class="like-section">
+                    <form
+                        id="like-form"
+                        method="post"
+                        action="{% url 'courses:toggle_like' course.id %}"
+                    >
+                        {% csrf_token %}
+                        <button type="submit" id="like-btn" class="like-btn">
+                            {% if request.user in course.likes.all %} ❤️ Liked
+                            {% else %} 🤍 Like {% endif %}
+                        </button>
+                        <span id="like-count" class="like-count"
+                            >{{ course.total_likes }} likes</span
+                        >
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -71,6 +99,7 @@
         </div>
     </div>
 
+    <!-- Rest of the content remains the same -->
     <div class="course-navigation">
         <div class="nav-tabs">
             <button class="nav-tab active" data-tab="lessons">
@@ -177,6 +206,172 @@
                 </div>
                 {% endfor %}
             </div>
+
+            <!-- Course Review Section -->
+            <div class="course-review-section">
+                <div class="review-header">
+                    <h3>📝 Leave a Review</h3>
+                    <p>
+                        Share your experience with this course to help other
+                        learners!
+                    </p>
+                </div>
+
+                <!-- Check if user has already reviewed -->
+                {% if user_review %}
+                <div class="existing-review">
+                    <h4>Your Review</h4>
+                    <div class="review-card user-review">
+                        <div class="review-header-info">
+                            <div class="user-info">
+                                <img
+                                    src="{% if request.user.profile.profile_picture %}{{ request.user.profile.profile_picture.url }}{% else %}{% static 'images/profile.webp' %}{% endif %}"
+                                    alt="Your Profile"
+                                    class="user-avatar"
+                                />
+                                <div class="user-details">
+                                    <h5>{{ request.user.username }}</h5>
+                                    <div class="rating">
+                                        {% for i in "12345" %} 
+                                        {% if forloop.counter <= user_review.rating %}
+                                        <span class="star filled">⭐</span>
+                                        {% else %}
+                                        <span class="star">☆</span>
+                                        {% endif %} {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-date">
+                                {{ user_review.created_at|date:"M d, Y" }}
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>{{ user_review.content }}</p>
+                        </div>
+                        <div class="review-actions">
+                            <button
+                                class="edit-review-btn"
+                                onclick="toggleEditReview()"
+                            >
+                                ✏️ Edit
+                            </button>
+                            <form
+                                method="post"
+                                action="{% url 'courses:delete_review' course.id %}"
+                                class="delete-review-form"
+                                onsubmit="return confirm('Are you sure you want to delete your review?')"
+                            >
+                                {% csrf_token %}
+                                <button
+                                    type="submit"
+                                    class="delete-review-btn"
+                                >
+                                    🗑️ Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Review Form (Hidden by default) -->
+                <div
+                    class="edit-review-form"
+                    id="edit-review-form"
+                    style="display: none"
+                >
+                    <h4>Edit Your Review</h4>
+                    <form
+                        method="post"
+                        action="{% url 'courses:update_review' course.id %}"
+                    >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="rating">Rating:</label>
+                            <div class="star-rating">
+                                {% for i in "12345" %} <input type="radio"
+                                name="rating" id="star{{ forloop.counter
+                                }}-edit" value="{{ forloop.counter }}" 
+                                {% if user_review.rating == forloop.counter %}checked{% endif %}>
+                                <label
+                                    for="star{{ forloop.counter }}-edit"
+                                    class="star-label"
+                                    >⭐</label
+                                >
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Review:</label>
+                            <textarea
+                                name="content"
+                                id="content"
+                                rows="4"
+                                placeholder="Update your review..."
+                            >
+{{ user_review.content }}</textarea
+                            >
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">
+                                💾 Update Review
+                            </button>
+                            <button
+                                type="button"
+                                class="cancel-btn"
+                                onclick="toggleEditReview()"
+                            >
+                                ❌ Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {% else %}
+                <!-- New Review Form -->
+                <div class="new-review-form">
+                    <form
+                        method="post"
+                        action="{% url 'courses:add_review' course.id %}"
+                    >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="rating">Rating:</label>
+                            <div class="star-rating">
+                                {% for i in "12345" %}
+                                <input
+                                    type="radio"
+                                    name="rating"
+                                    id="star{{ forloop.counter }}"
+                                    value="{{ forloop.counter }}"
+                                    required
+                                />
+                                <label
+                                    for="star{{ forloop.counter }}"
+                                    class="star-label"
+                                    >⭐</label
+                                >
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Review:</label>
+                            <textarea
+                                name="content"
+                                id="content"
+                                rows="4"
+                                placeholder="Share your thoughts about this course..."
+                                required
+                            ></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">
+                                📝 Submit Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -216,8 +411,6 @@
     </div>
 </div>
 
-{% endblock %} 
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{% static 'js/course_dashboard.js' %}"></script>
 {% endblock %}

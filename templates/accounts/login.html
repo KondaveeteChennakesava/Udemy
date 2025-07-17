@@ -1,21 +1,83 @@
-{% extends 'base.html' %} {% block title %}Login | Udemy Clone By Kesava{% endblock %} 
+{% extends 'base.html' %} 
+{% load static %}
+{% block title %}Login | Udemy Clone By Kesava{% endblock %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+{% endblock %}
 {% block content %}
-<div class="main">
-    <div class="form-wrapper">
-        <h2>Login</h2>
-        {% if error %}
-        <div class="alert">{{ error }}</div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required />
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <div class="auth-header">
+            <h1>Welcome Back! 👋</h1>
+            <p>Sign in to continue your learning journey</p>
+        </div>
+        
+        <div class="auth-form">
+            {% if error %}
+            <div class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="post" class="login-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="username">👤 Username</label>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        id="username" 
+                        placeholder="Enter your username"
+                        required 
+                        autocomplete="username"
+                    />
+                </div>
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required />
+                <div class="form-group">
+                    <label for="password">🔒 Password</label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password" 
+                            placeholder="Enter your password"
+                            required 
+                            autocomplete="current-password"
+                        />
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <span id="toggle-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
 
-            <button type="submit">Login</button>
-        </form>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember_me">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="{% url 'accounts:register' %}" class="auth-link">Sign up here</a></p>
+        </div>
     </div>
 </div>
+
+<script>
+
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/login.js' %}"></script>
 {% endblock %}

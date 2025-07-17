@@ -1,0 +1,138 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %} 
+{% block content %}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-left">
+            {% if profile.profile_picture %}
+            <img
+                src="{{ profile.profile_picture.url }}"
+                alt="Profile picture"
+                class="profile-pic"
+            />
+            {% else %}
+            <img
+                src="{% static 'images/default-profile.webp' %}"
+                alt="Default profile"
+                class="profile-pic"
+            />
+            {% endif %}
+
+            {% if user_obj.is_instructor %}
+            <div class="followers-section">
+                <p class="followers-count"><strong>{{ profile.total_followers }}</strong> followers</p>
+
+                {% if request.user.is_authenticated and request.user != user_obj %}
+                <form
+                    method="post"
+                    action="{% url 'profiles:toggle_follow' user_obj.username %}"
+                    class="follow-form"
+                >
+                    {% csrf_token %}
+                    <button type="submit" class="follow-btn">
+                        {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-right">
+            <h2 class="username">{{ user_obj.username }}</h2>
+            
+            <div class="user-details">
+                {% if user_obj.first_name or user_obj.last_name %}
+                <p class="full-name">
+                    <span class="label">👤 Full Name:</span>
+                    <span class="value">{{ user_obj.first_name|default:"" }} {{ user_obj.last_name|default:"" }}</span>
+                </p>
+                {% endif %}
+                
+                <p class="email">
+                    <span class="label">📧 Email:</span>
+                    <span class="value">{{ user_obj.email }}</span>
+                </p>
+                
+                {% if user_obj.is_instructor %}
+                <p class="user-type">
+                    <span class="label">🎓 Role:</span>
+                    <span class="value instructor-badge">Instructor</span>
+                </p>
+                {% else %}
+                <p class="user-type">
+                    <span class="label">📚 Role:</span>
+                    <span class="value student-badge">Student</span>
+                </p>
+                {% endif %}
+
+                {% if profile.location %}
+                <p class="location">
+                    <span class="label">📍 Location:</span>
+                    <span class="value">{{ profile.location }}</span>
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="bio-section">
+                <p class="bio-label">📝 Bio:</p>
+                <p class="bio">
+                    {% if profile.bio %}
+                        {{ profile.bio }}
+                    {% else %}
+                        <em>No bio available yet.</em>
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if profile.website or profile.social_github or profile.social_linkedin %}
+            <div class="social-section">
+                <p class="social-label">🔗 Social Links:</p>
+                <ul class="social-links">
+                    {% if profile.website %}
+                    <li><a href="{{ profile.website }}" target="_blank">🌐 Website</a></li>
+                    {% endif %}
+                    {% if profile.social_github %}
+                    <li><a href="{{ profile.social_github }}" target="_blank">🐙 GitHub</a></li>
+                    {% endif %}
+                    {% if profile.social_linkedin %}
+                    <li><a href="{{ profile.social_linkedin }}" target="_blank">💼 LinkedIn</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if request.user == user_obj %}
+            <div class="edit-profile-link">
+                <a href="{% url 'profiles:edit_profile' user_obj.username %}" class="edit-btn">✏️ Edit Profile</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="course-section">
+        {% if user_obj.is_instructor %}
+        <h3>📚 Courses by {{ user_obj.username }}</h3>
+        {% else %}
+        <h3>🎓 Enrolled Courses</h3>
+        {% endif %}
+
+        <ul class="course-list">
+            {% for course in courses %}
+            <li class="course-item">
+                <a href="{% url 'courses:course_detail' course.id %}">
+                    {{ course.title }}
+                </a>
+            </li>
+            {% empty %}
+            <li class="no-courses">No courses found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit-profile.css' %}" />
+<link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css" />
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+    <h2>✏️ Edit Profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <fieldset>
+            <legend>👤 Account Information</legend>
+            {{ user_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <legend>📝 Profile Information</legend>
+            
+            <div class="profile-picture-section">
+                <label for="id_profile_picture_input">📸 Profile Picture</label>
+                <div class="current-profile-pic">
+                    {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Current Profile" class="current-pic">
+                        <p>Current Profile Picture</p>
+                    {% else %}
+                        <img src="{% static 'images/default-profile.webp' %}" alt="Default Profile" class="current-pic">
+                        <p>No profile picture set</p>
+                    {% endif %}
+                </div>
+                
+                <div class="upload-section">
+                    <input type="file" id="id_profile_picture_input" accept="image/*" class="file-input">
+                    <label for="id_profile_picture_input" class="file-label">
+                        📤 Choose New Image
+                    </label>
+                </div>
+                
+                <div class="image-crop-container" id="crop-container" style="display: none;">
+                    <h4>🎯 Crop Your Image</h4>
+                    <p class="crop-instruction">Drag and resize the selection to crop your image perfectly for your profile.</p>
+                    <div class="crop-wrapper">
+                        <img id="preview" alt="Profile Preview" />
+                    </div>
+                    <div class="crop-controls">
+                        <button type="button" id="rotate-left" class="crop-btn">↺ Rotate Left</button>
+                        <button type="button" id="rotate-right" class="crop-btn">↻ Rotate Right</button>
+                        <button type="button" id="reset-crop" class="crop-btn">🔄 Reset</button>
+                    </div>
+                </div>
+                
+                <input type="hidden" name="cropped_image" id="cropped_image_data" />
+            </div>
+
+            <div class="form-fields">
+                {{ profile_form.bio.label_tag }} {{ profile_form.bio }}
+                {{ profile_form.location.label_tag }} {{ profile_form.location }}
+                {{ profile_form.website.label_tag }} {{ profile_form.website }}
+                {{ profile_form.social_github.label_tag }} {{ profile_form.social_github }}
+                {{ profile_form.social_linkedin.label_tag }} {{ profile_form.social_linkedin }}
+            </div>
+        </fieldset>
+
+        <div class="form-actions">
+            <button type="submit" class="save-btn">💾 Save Changes</button>
+            <a href="{% url 'profiles:profile' user.username %}" class="cancel-btn">❌ Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+<script>
+    let cropper;
+    const imageInput = document.getElementById('id_profile_picture_input');
+    const preview = document.getElementById('preview');
+    const croppedData = document.getElementById('cropped_image_data');
+    const cropContainer = document.getElementById('crop-container');
+    const rotateLeft = document.getElementById('rotate-left');
+    const rotateRight = document.getElementById('rotate-right');
+    const resetCrop = document.getElementById('reset-crop');
+
+    imageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                cropContainer.style.display = 'block';
+                
+                // Smooth scroll to crop section
+                cropContainer.scrollIntoView({ behavior: 'smooth' });
+
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(preview, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                    crop: function () {
+                        const canvas = cropper.getCroppedCanvas({ 
+                            width: 300, 
+                            height: 300,
+                            imageSmoothingEnabled: true,
+                            imageSmoothingQuality: 'high'
+                        });
+                        croppedData.value = canvas.toDataURL('image/png');
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    rotateLeft.addEventListener('click', () => {
+        if (cropper) cropper.rotate(-90);
+    });
+
+    rotateRight.addEventListener('click', () => {
+        if (cropper) cropper.rotate(90);
+    });
+
+    resetCrop.addEventListener('click', () => {
+        if (cropper) cropper.reset();
+    });
+</script>
+{% endblock %}

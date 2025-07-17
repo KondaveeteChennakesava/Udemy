@@ -68,7 +68,7 @@
                     {% if course.thumbnail %}
                         <img src="{{ course.thumbnail.url }}" alt="Thumbnail for {{ course.thumbnail }}">
                     {% else %}
-                        <img src="media/course_thumbnails/information-dark.png" alt="Course placeholder">
+                        <img src="{% static 'images/default-course.png' %}" alt="Course placeholder">
                     {% endif %}
                     
                     <div class="course-card-content">
