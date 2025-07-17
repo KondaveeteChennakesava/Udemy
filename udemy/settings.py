@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'payments',
     'certificates',
     'instructor',
+    'profiles',
 ]
 
 MIDDLEWARE = [
